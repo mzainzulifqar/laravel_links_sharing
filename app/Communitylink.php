@@ -5,14 +5,12 @@ namespace App;
 use App\Communitylinkvotes;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class Communitylink extends Model
 {
-    //
     
-    
-
 	protected  $table = 'community_links';
     protected $fillable = ['channel_id','user_id','title','link'];
 
@@ -113,8 +111,16 @@ class Communitylink extends Model
     */
     public function votes(){
             
-            return $this->hasMany(Communitylinkvotes::class,'community_links_id');
-        
-         //do your magic here
+        return $this->hasMany(Communitylinkvotes::class,'community_links_id');
     }
+
+
+    public static  function get_voted_users($id){
+
+        $result = DB::select(DB::raw('SELECT users.name FROM users join community_links_votes on community_links_votes.user_id = users.id join community_links on community_links.id = community_links_votes.community_links_id where community_links.id = '.$id.'  '));
+
+        return $result;
+
+    }
+   
 }

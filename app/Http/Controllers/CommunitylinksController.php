@@ -5,17 +5,28 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Communitylink;
 use Illuminate\Http\Request;
+use Auth;
 
 class CommunitylinksController extends Controller
 {
     //
 
     public function index(Channel $channel = null){
+
+      // dd(request()->get());
+
+      //   ->leftJoin('community_links_votes','community_links_votes.community_links_id','=','community_links.id')
+      // ->selectRaw('community_links.*,count(community_links_votes.id) as vote_count')
+      // ->groupBy('community_links.id')
     	
+      $orderBy  = request()->get('sortBy') ? 'votes_count':'updated_at';
+
     	$links = Communitylink::approved()
+      ->withCount('votes')
+      ->orderBy($orderBy,'desc')
       ->with('votes')
-      ->latest('updated_at')
       ->Paginate(10);
+
       
       $channels = Channel::all();
     	return view('index',compact('links','channels'));
@@ -75,5 +86,39 @@ class CommunitylinksController extends Controller
         return view('index',compact('channels','links','slug'));
       
     }
+
+    /**
+    *
+    *User voting for specific link
+    *@return 
+    */
+    public function voteFor(Communitylink $link){
+      
+      if(Auth::user()->votedFor($link))
+      {
+        Auth::user()->unvoteFor($link);
+        return back()->with('success','Successfully un-voted');
+        
+      }
+      else
+      {
+        Auth::user()->voteFor($link);
+        return back()->with('success','Successfully voted');
+
+      }
+
+    }
+
+    /**
+    *
+    *Filters records
+    *@return 
+    */
+    public function sortBy(Request $request){
+        
+        dd($request->exists('popular'));
+    }
+    
+    
     
 }

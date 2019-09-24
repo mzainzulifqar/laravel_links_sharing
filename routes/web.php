@@ -1,5 +1,7 @@
 <?php
 
+use App\Communitylink;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,7 +13,20 @@
 |
 */
 
-Route::get('/','CommunitylinksController@index');
+Route::get('/test',function(){
+ 
+ 	$link = Communitylink::find(14);
+ 	// dd(Auth::user()->votes()->get());
+
+ 	// dd($link);
+
+ 
+});
+Route::get('/',function(){
+	return redirect('/contributions');
+});
+
+Route::get('/contributions','CommunitylinksController@index')->name('foobar');
 
 // Route::get('community','CommunitylinksController@index');
 Route::post('community','CommunitylinksController@store');
@@ -19,3 +34,5 @@ Route::get('/channel/{channel}','CommunitylinksController@get_channel_related_li
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/vote/{link}','CommunitylinksController@voteFor')->name('vote')->middleware('auth');
+Route::get('/sortBy','CommunitylinksController@sortBy')->name('sortBy');

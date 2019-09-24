@@ -39,8 +39,21 @@ class User extends Authenticatable
         return $link->votes->contains('user_id',$this->id);
     }
 
-    public function voteFor(Communitylink $link)
+    public function votes()
     {
-        return $link->votes()->create(['user_id' => $this->id,'community_links_id' => $link->id]);
+        return $this->belongsToMany(Communitylink::class,'community_links_votes','user_id','community_links_id');
     }
+
+    public function voteFor(Communitylink $link){
+
+        return $this->votes()->sync([$link->id],false);
+    }
+
+    public function unvoteFor(Communitylink $link)
+    {
+        return $this->votes()->detach($link);
+    }
+
+
+
 }

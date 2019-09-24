@@ -38,7 +38,8 @@
  <style>
    .votes:hover{
     background-color:#54DFC3!important;
-    border:transparent; 
+    border:transparent;
+    border-color: transparent!important; 
    }
  </style>
  <!-- END HEAD -->
@@ -61,20 +62,26 @@
                         <div class="col-md-6">
                             <div class="card  card-box">
                                 <div class="card-head">
-                                    <header>Filters</header>
+                                    <header>Info</header>
                                 </div>
                                 <div class="card-body ">
                          
                                   <!-- button-group -->
                                   <div class="btn-group">
-                                      <button type="button" class="btn btn-primary">Most Recent</button>
+                                    @if (!Auth::check())                    
+                                      <a href="{{url('/login')}}" class="btn btn-primary">Sign Up To Contribute</a>
+                                      @else
+                                      <h4><strong>Welcome We'love people who share with other's!</strong></h4>
+                                      @endif
                                    
                                       
                                   </div>
                                   <!-- button-group -->
                                   <div class="btn-group">
-                                      <button type="button" class="btn btn-success">Most Popular</button>
-                                     
+
+                                    
+                                      {{-- <button type="button" class="btn btn-success">Most Popular</button>
+                                      --}}
                                      
                                   </div>
                                   <!-- button-group -->
@@ -101,14 +108,14 @@
                                   </div>
                                   <!-- button-group -->
                                   <div class="btn-group">
-                                      <button type="button" class="btn btn-success">Most Popular</button>
+                                      <a href="{{ route('foobar',['sortBy'=>'popular']) }}" class="btn btn-success">Most Popular</a>
                                      
                                      
                                   </div>
-                                  @if (isset($slug) && request()->url() == route('get_channel_related_links',$slug ))
+                                  @if (isset($slug) && request()->url() == route('get_channel_related_links',$slug ) || request()->exists('sortBy'))
                                     
                                    <div class="btn-group">
-                                      <a href="{{ url('/') }}" class="btn btn-warning">Clear Filters</a>
+                                      <a href="{{ route('foobar') }}" class="btn btn-warning">Clear Filters</a>
                                      
                                      
                                   </div>
@@ -153,7 +160,12 @@
                                                         </td>
                                                        
                                                         <td>
-                                                            <button  data-toggle="button" class="btn btn-{{Auth::check() && Auth::user()->votedFor($link) ? 'danger' : 'default'}} votes"><i class="fa fa-thumbs-up "></i>{{$link->votes->count()}}</button>
+                                                          <form id="form-{{$link->id}}" action="{{ route("vote",$link->id)}}" method="POST">
+                                                            @csrf
+                                                            
+                                                            <button onclick="submit('form-{{$link->id}}')" data-toggle="button" class="za_btn btn btn-{{Auth::check() && Auth::user()->votedFor($link) ? 'danger' : 'default'}} votes"><i class="fa fa-thumbs-up "></i>{{$link->votes->count()}}</button>
+
+                                                            </form>
                                                         </td>
                                                     </tr>
 
@@ -162,8 +174,9 @@
                                                     
                                                 </tbody>
                                             </table>
-
-                                            {{$links->links()}}
+                                            
+                                            {{-- {{dd($links->appends('popular')->links())}} --}}
+                                            {{$links->appends(request()->input())->links()}}
                                         </div>
                                           @else
                                                     <h2 class="text-center">No Contributions yet.! </h2>
@@ -286,6 +299,14 @@
     <script>
         $(document).ready(function()
         {
+          
+          $('.za_btn').click(function(){
+
+              $('.za_btn').each(function(){
+                $('.za_btn').attr("disabled",true);
+              });
+            
+          });
 
          @if (Session::has('success')) 
          
