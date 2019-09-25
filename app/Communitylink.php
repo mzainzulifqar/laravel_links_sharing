@@ -117,7 +117,11 @@ class Communitylink extends Model
 
     public static  function get_voted_users($id){
 
-        $result = DB::select(DB::raw('SELECT users.name FROM users join community_links_votes on community_links_votes.user_id = users.id join community_links on community_links.id = community_links_votes.community_links_id where community_links.id = '.$id.'  '));
+        $result = DB::select(
+            DB::raw('SELECT users.name FROM users join community_links_votes on community_links_votes.user_id = users.id 
+                join community_links on community_links.id = community_links_votes.community_links_id 
+                where community_links.id = '.$id.'  ')
+        );
 
         return $result;
 

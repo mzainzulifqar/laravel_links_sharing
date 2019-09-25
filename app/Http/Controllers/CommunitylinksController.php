@@ -74,7 +74,6 @@ class CommunitylinksController extends Controller
     *get_channel_related_links
     *@return 
     */
-
     public function get_channel_related_links($slug){
 
         $channels  = Channel::all();
@@ -107,16 +106,6 @@ class CommunitylinksController extends Controller
 
       }
 
-    }
-
-    /**
-    *
-    *Filters records
-    *@return 
-    */
-    public function sortBy(Request $request){
-        
-        dd($request->exists('popular'));
     }
     
     

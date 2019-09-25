@@ -13,7 +13,7 @@ class Communitylinkvotes extends Model
      
     public function users()
     {
-    return $this->belongsToMany(User::class, 'user_id');
+    return $this->belongsToMany(User::class, 'community_links_votes','user_id','community_links_id');
     }
 
 }

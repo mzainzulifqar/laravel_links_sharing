@@ -15,13 +15,10 @@ use App\Communitylink;
 
 Route::get('/test',function(){
  
- 	$link = Communitylink::find(14);
- 	// dd(Auth::user()->votes()->get());
-
- 	// dd($link);
-
+ 
  
 });
+
 Route::get('/',function(){
 	return redirect('/contributions');
 });
